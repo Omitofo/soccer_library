@@ -1,5 +1,6 @@
 import { BookItem } from "@/lib/data/library";
-import { Book, CheckCircle2 } from "lucide-react";
+import { Book, CheckCircle2, ArrowRight } from "lucide-react";
+import Link from "next/link";
 
 interface BookCardProps {
   book: BookItem;
@@ -7,11 +8,13 @@ interface BookCardProps {
 
 export default function BookCard({ book }: BookCardProps) {
   return (
-    <div className="bg-zinc-900/40 border border-zinc-800/80 rounded-2xl p-6 hover:border-emerald-500/30 transition-all duration-300 flex flex-col justify-between gap-6">
+    <Link 
+      href={`/books/${book.id}`}
+      className="group bg-zinc-900/40 border border-zinc-800/80 rounded-2xl p-6 hover:border-emerald-500/40 transition-all duration-300 flex flex-col justify-between gap-6 hover:shadow-[0_0_30px_rgba(16,185,129,0.02)]"
+    >
       <div>
-        {/* Encabezado: Icono + Título */}
         <div className="flex items-start gap-4">
-          <div className="p-3 bg-zinc-950 border border-zinc-800 rounded-xl text-emerald-500 shrink-0">
+          <div className="p-3 bg-zinc-950 border border-zinc-800 rounded-xl text-emerald-500 shrink-0 group-hover:border-emerald-500/20 transition-colors">
             <Book className="w-6 h-6" />
           </div>
           <div>
@@ -24,21 +27,18 @@ export default function BookCard({ book }: BookCardProps) {
           </div>
         </div>
 
-        {/* Resumen / Review */}
         <p className="text-zinc-400 text-sm mt-4 leading-relaxed">
           {book.review}
         </p>
 
-        {/* Separador sutil */}
         <div className="h-[1px] bg-zinc-800/60 my-5" />
 
-        {/* Aprendizajes Clave (Takeaways) */}
         <div>
           <h4 className="text-xs font-bold tracking-wider text-emerald-500 uppercase mb-3">
             Lecciones de Élite
           </h4>
           <ul className="space-y-2.5">
-            {book.takeaways.map((takeaway, index) => (
+            {book.takeaways.slice(0, 2).map((takeaway, index) => (
               <li key={index} className="flex items-start gap-2.5 text-zinc-300 text-sm leading-normal">
                 <CheckCircle2 className="w-4 h-4 text-emerald-500/70 shrink-0 mt-0.5" />
                 <span>{takeaway}</span>
@@ -47,6 +47,10 @@ export default function BookCard({ book }: BookCardProps) {
           </ul>
         </div>
       </div>
-    </div>
+
+      <div className="flex items-center text-xs font-semibold text-emerald-500 group-hover:translate-x-1 transition-transform">
+        Abrir análisis profundo <ArrowRight className="w-3.5 h-3.5 ml-1" />
+      </div>
+    </Link>
   );
 }

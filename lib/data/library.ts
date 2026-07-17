@@ -1,10 +1,22 @@
+import { HERR_PEP_DATA } from "./books/herr-pep";
+
 // 1. DEFINICIÓN DE ESTRUCTURAS (INTERFACES)
 export interface ArticleItem {
   id: string;
   title: string;
   summary: string;
   keyPoints: string[];
-  visualContent?: string; // Para diagramas ASCII o estructuras de texto
+  visualContent?: string;
+}
+
+// NUEVAS INTERFACES PARA LECTURA PROFUNDA
+export interface ChapterItem {
+  title: string;
+  concept: string; // Explicación estilo Tarzán (directa y simple)
+  example: string; // Caso real en el campo de juego
+  dos: string[];
+  donts: string[];
+  tacticalTip?: string; // Consejo mental o de posicionamiento
 }
 
 export interface BookItem {
@@ -13,6 +25,8 @@ export interface BookItem {
   author: string;
   review: string;
   takeaways: string[];
+  introduction?: string; // Texto introductorio largo
+  chapters?: ChapterItem[]; // El desglose profundo por capítulos
 }
 
 export interface SoccerLibrary {
@@ -85,16 +99,6 @@ export const SOCCER_LIBRARY: SoccerLibrary = {
     }
   ],
   books: [
-    {
-      id: "herr-pep",
-      title: "Herr Pep",
-      author: "Martí Perarnau",
-      review: "Un desglose táctico y humano del primer año de Guardiola en el Bayern Múnich. Explica la metamorfosis de los conceptos de posesión hacia la ocupación estricta de los espacios (Juego de Posición).",
-      takeaways: [
-        "La posesión del balón solo sirve si desplaza al bloque defensivo rival.",
-        "Regla de los 3 segundos: tras perder el balón, presiona a máxima intensidad inmediatamente.",
-        "La amplitud en el campo estira las defensas; el carril central define los partidos."
-      ]
-    }
+        HERR_PEP_DATA
   ]
 };

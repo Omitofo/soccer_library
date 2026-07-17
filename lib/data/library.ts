@@ -1,4 +1,6 @@
 import { HERR_PEP_DATA } from "./books/herr-pep";
+import { PIRAMIDE_INVERTIDA_DATA } from "./books/piramide-invertida";
+import { JUEGO_DE_POSICION_DATA } from "./books/juego-de-posicion";
 
 // 1. DEFINICIÓN DE ESTRUCTURAS (INTERFACES)
 export interface ArticleItem {
@@ -99,6 +101,8 @@ export const SOCCER_LIBRARY: SoccerLibrary = {
     }
   ],
   books: [
-        HERR_PEP_DATA
+    HERR_PEP_DATA,
+    PIRAMIDE_INVERTIDA_DATA,
+    JUEGO_DE_POSICION_DATA
   ]
 };

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Soccer Mastermind Academy - Library",
+  title: "Soccer Academy - Library",
   description: "Búnker táctico estático para el jugador profesional moderno",
 };
 

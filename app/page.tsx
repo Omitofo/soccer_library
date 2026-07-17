@@ -38,7 +38,7 @@ export default function HomePage() {
       {/* Header Motivacional */}
       <header className="text-center max-w-2xl mb-12">
         <span className="text-xs font-bold tracking-widest text-emerald-500 uppercase bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
-          Soccer Mastermind Academy
+          Soccer Academy
         </span>
         <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mt-4 mb-4">
           Biblioteca de Inteligencia Futbolística

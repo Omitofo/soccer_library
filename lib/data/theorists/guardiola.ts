@@ -1,0 +1,45 @@
+import { TacticalTheorist } from "./types";
+
+export const GUARDIOLA: TacticalTheorist = {
+  id: "guardiola",
+  name: "Pep Guardiola",
+  years: "1971–presente",
+  role: "Entrenador",
+  nationality: "España",
+  clubs: ["FC Barcelona", "Bayern Múnich", "Manchester City"],
+  categoryIds: ["espacios", "posesion", "superioridades"],
+  keyIdea: "Cada zona del campo debe resolverse con una superioridad clara antes de arriesgar el pase vertical.",
+  philosophy:
+    "Guardiola tomó el Juego de Posición de Cruyff y le añadió precisión matemática: distancias de 8 a 12 metros entre compañeros, ocupación sistemática de los medios espacios y la obsesión por generar un jugador de más en cada sector antes de decidir. Su carrera es una serie de reinvenciones del mismo principio: el tiki-taka del Barça, el lateral falso en el Bayern, los laterales invertidos en el Manchester City. El sistema cambia; la lógica posicional, no.",
+  contributions: [
+    "Ganó el triplete con el Barcelona en 2009 llevando el tiki-taka a su máxima expresión de control posicional.",
+    "Reinventó al lateral clásico como mediocentro añadido en el Bayern Múnich, generando superioridad numérica en la salida.",
+    "Introdujo el concepto de medios espacios como zona de ataque preferente en el Manchester City.",
+    "Convirtió la superioridad posicional (no solo numérica) en el estándar táctico de la última década.",
+  ],
+  legacy:
+    "Casi todo entrenador de élite actual ha adoptado, adaptado o reaccionado contra su modelo. La discusión táctica moderna se organiza, en buena medida, a favor o en contra de sus ideas.",
+  relatedSchemeIds: ["salida-lateral-falso", "sobrecarga-banda", "unit-pressing"],
+  relatedBookId: "herr-pep",
+  boardState: {
+    step: 1,
+    caption:
+      "El lateral se adentra al medio espacio para generar superioridad de 3 contra 2 frente a la primera línea de presión rival, la firma táctica de Guardiola en el Bayern y el City.",
+    players: [
+      { id: "gk", label: "1", x: 50, y: 140, team: "home" },
+      { id: "cb1", label: "4", x: 38, y: 120, team: "home" },
+      { id: "cb2", label: "6", x: 62, y: 120, team: "home" },
+      { id: "rb", label: "2", x: 35, y: 100, team: "home", highlighted: true },
+      { id: "lb", label: "3", x: 85, y: 110, team: "home" },
+      { id: "dm", label: "5", x: 55, y: 98, team: "home" },
+      { id: "cm1", label: "8", x: 30, y: 78, team: "home" },
+      { id: "cm2", label: "10", x: 70, y: 90, team: "home" },
+      { id: "rw", label: "7", x: 10, y: 85, team: "home", highlighted: true },
+      { id: "st", label: "9", x: 50, y: 55, team: "home" },
+      { id: "lw", label: "11", x: 85, y: 60, team: "home" },
+      { id: "rst1", label: "R", x: 38, y: 95, team: "away" },
+      { id: "rst2", label: "R", x: 62, y: 95, team: "away" },
+    ],
+    zones: [{ x: 20, y: 88, width: 55, height: 26, label: "Superioridad 3 vs 2 en salida", variant: "positive" }],
+  },
+};

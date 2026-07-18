@@ -1,8 +1,12 @@
 import Link from "next/link";
-import { ArrowLeft, Shield } from "lucide-react";
+import { ArrowLeft, ArrowRight, Shield, History } from "lucide-react";
 import { TACTICS_SCHEMES, CATEGORY_LABELS, getSchemesByCategory, TacticCategory } from "@/lib/data/tactics";
+import {
+  CATEGORY_ORDER as THEORIST_CATEGORY_ORDER,
+  CATEGORY_LABELS as THEORIST_CATEGORY_LABELS,
+  THEORISTS,
+} from "@/lib/data/theorists";
 import SchemeCard from "@/components/soccer/SchemeCard";
-
 const CATEGORY_ORDER: TacticCategory[] = [
   "organizacion-defensiva",
   "presion",
@@ -45,6 +49,38 @@ export default function TacticsPage() {
         </header>
 
         <main className="space-y-16">
+          {/* ================= ARQUITECTOS TÁCTICOS ================= */}
+          <section className="bg-gradient-to-br from-emerald-950/20 via-zinc-900/30 to-zinc-950 border border-zinc-800 rounded-3xl p-6 md:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+            <div className="max-w-2xl space-y-3">
+              <div className="flex items-center gap-2 text-emerald-500">
+                <History className="w-5 h-5" />
+                <span className="text-xs font-bold tracking-wider uppercase">Nuevo Módulo — Historia y Filosofía Táctica</span>
+              </div>
+              <h2 className="text-xl md:text-2xl font-black text-zinc-100 tracking-tight">
+                Los Arquitectos del Juego
+              </h2>
+              <p className="text-zinc-400 text-sm leading-relaxed">
+                Cada pizarra de esta sección existe gracias a una idea que alguien defendió contra su época: Cruyff y los carriles, Sacchi y el bloque de 25 metros, Bielsa y la presión total, Klopp y el gegenpressing. {THEORISTS.length} mentes, siete conceptos, un mismo hilo conductor.
+              </p>
+              <div className="flex flex-wrap gap-2 pt-1">
+                {THEORIST_CATEGORY_ORDER.map((id) => (
+                  <span
+                    key={id}
+                    className="text-[10px] font-mono font-bold uppercase tracking-widest text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded-full"
+                  >
+                    {THEORIST_CATEGORY_LABELS[id]}
+                  </span>
+                ))}
+              </div>
+            </div>
+            <Link
+              href="/tactics/theorists"
+              className="shrink-0 inline-flex items-center gap-2 text-sm font-bold text-zinc-950 bg-emerald-500 hover:bg-emerald-400 transition-colors px-5 py-3 rounded-xl"
+            >
+              Explorar Arquitectos <ArrowRight className="w-4 h-4" />
+            </Link>
+          </section>
+
           {CATEGORY_ORDER.map((category) => {
             const schemes = getSchemesByCategory(category);
             if (schemes.length === 0) return null;

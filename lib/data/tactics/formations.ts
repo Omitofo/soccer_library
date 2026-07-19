@@ -76,15 +76,15 @@ export function findById(players: PitchPlayer[], id: string): PitchPlayer {
 export function moveTo(
   players: PitchPlayer[],
   id: string,
-  patch: Partial<Pick<PitchPlayer, "x" | "y" | "highlighted">>
+  patch: Partial<Pick<PitchPlayer, "x" | "y" | "highlighted" | "label">>
 ): PitchPlayer[] {
   return players.map((p) => (p.id === id ? { ...p, ...patch } : p));
 }
 
-/** Aplica varios movimientos/resaltados encadenados en una sola pasada. */
+/** Aplica varios movimientos/resaltados/etiquetas encadenados en una sola pasada. */
 export function applyMoves(
   players: PitchPlayer[],
-  moves: Array<[string, Partial<Pick<PitchPlayer, "x" | "y" | "highlighted">>]>
+  moves: Array<[string, Partial<Pick<PitchPlayer, "x" | "y" | "highlighted" | "label">>]>
 ): PitchPlayer[] {
   return moves.reduce((acc, [id, patch]) => moveTo(acc, id, patch), players);
 }

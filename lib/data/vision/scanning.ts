@@ -1,4 +1,45 @@
 import { VisionConcept } from "./types";
+import { goalkeeper, line, applyMoves, ballAt } from "../tactics/formations";
+
+// Local: 4-3-3 construyendo. "Tú" eres el mediocentro (h7), a punto de
+// recibir un pase de tu central.
+const HOME = [
+  goalkeeper("home", "h"),
+  ...line(4, 80, "home", "h", 2),
+  ...line(3, 58, "home", "h", 6),
+  ...line(3, 30, "home", "h", 9),
+];
+
+// Rival: 4-3-3 presionando la salida. a7 es tu marcador directo.
+const AWAY = [
+  goalkeeper("away", "a"),
+  ...line(4, 22, "away", "a", 2),
+  ...line(3, 42, "away", "a", 6),
+  ...line(3, 64, "away", "a", 9),
+];
+
+const BASE = applyMoves([...HOME, ...AWAY], [["h7", { label: "Tú" }]]);
+
+// Paso 1: el central todavía tiene el balón. Escaneas y ubicas a tu marcador.
+const step1Players = applyMoves(BASE, [
+  ["h7", { highlighted: true }],
+  ["a7", { highlighted: true }],
+]);
+
+// Paso 2: el balón viaja. Tu marcador ya arranca a cerrarte el espacio;
+// tú aprovechas ese medio segundo para mirar hacia adelante.
+const step2Players = applyMoves(step1Players, [
+  ["a7", { x: 46, y: 50 }], // el rival reacciona y acorta distancia
+  ["a8", { x: 68, y: 46 }], // el compañero de marca también se reordena
+]);
+
+// Paso 3: controlas orientado. Tu marcador llega, pero tarde: ya
+// resolviste con el primer toque hacia el espacio que habías visto.
+const step3Players = applyMoves(step2Players, [
+  ["a7", { x: 48, y: 54 }],
+  ["a8", { x: 62, y: 42 }],
+  ["h7", { highlighted: true }],
+]);
 
 export const SCANNING_DATA: VisionConcept = {
   id: "escaneo-alta-frecuencia",
@@ -20,36 +61,28 @@ export const SCANNING_DATA: VisionConcept = {
     {
       step: 1,
       caption: "Antes del pase: mientras tu central controla, giras el cuello para ubicar a tu marcador más cercano.",
-      players: [
-        { id: "self", label: "Tú", x: 55, y: 70, team: "home", highlighted: true },
-        { id: "cb", label: "4", x: 50, y: 92, team: "home" },
-        { id: "mk", label: "R", x: 62, y: 60, team: "away" }
-      ],
-      ball: { x: 50, y: 92 },
-      zones: [{ x: 45, y: 45, width: 30, height: 30, label: "Escaneo: marcador ubicado", variant: "positive" }]
+      players: step1Players,
+      ball: ballAt(step1Players, "h4"),
+      zones: [{ x: 34, y: 34, width: 32, height: 30, label: "Escaneo: marcador ubicado", variant: "positive" }],
     },
     {
       step: 2,
-      caption: "Balón viajando: en el instante exacto en que sale el pase, quitas la vista del balón medio segundo y miras el espacio.",
-      players: [
-        { id: "self", label: "Tú", x: 55, y: 70, team: "home", highlighted: true },
-        { id: "cb", label: "4", x: 50, y: 92, team: "home" },
-        { id: "mk", label: "R", x: 62, y: 60, team: "away" }
+      caption: "Balón viajando: quitas la vista de la pelota medio segundo y miras el espacio, mientras tu marcador ya corre a cerrarte.",
+      players: step2Players,
+      ball: { x: 56, y: 70 },
+      arrows: [
+        { from: { x: 62, y: 80 }, to: { x: 50, y: 58 }, type: "pass" },
+        { from: { x: 50, y: 42 }, to: { x: 46, y: 50 }, type: "press" },
       ],
-      ball: { x: 53, y: 82 },
-      arrows: [{ from: { x: 50, y: 92 }, to: { x: 55, y: 70 }, type: "pass" }],
-      zones: [{ x: 65, y: 40, width: 28, height: 25, label: "Espacio de ataque detectado", variant: "positive" }]
+      zones: [{ x: 62, y: 25, width: 28, height: 25, label: "Espacio de ataque detectado", variant: "positive" }],
     },
     {
       step: 3,
-      caption: "Control orientado: regresas la mirada al balón solo para asegurar el primer toque hacia el espacio ya descubierto.",
-      players: [
-        { id: "self", label: "Tú", x: 55, y: 70, team: "home", highlighted: true },
-        { id: "mk", label: "R", x: 62, y: 60, team: "away" }
-      ],
-      ball: { x: 55, y: 70 },
-      arrows: [{ from: { x: 55, y: 70 }, to: { x: 78, y: 45 }, type: "dribble" }]
-    }
+      caption: "Control orientado: el primer toque ya va hacia el espacio que habías descubierto, antes de que tu marcador llegue.",
+      players: step3Players,
+      ball: ballAt(step3Players, "h7"),
+      arrows: [{ from: { x: 50, y: 58 }, to: { x: 75, y: 32 }, type: "dribble" }],
+    },
   ],
-  relatedConceptIds: ["perfilado-45-grados", "anticipacion-lineas-pase"]
+  relatedConceptIds: ["perfilado-45-grados", "anticipacion-lineas-pase"],
 };

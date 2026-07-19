@@ -50,6 +50,13 @@ export const GUARDIOLA: TacticalTheorist = {
       { id: "a11", label: "9", x: 38, y: 68, team: "away" },
     ],
     ball: { x: 50, y: 66 },
+    // El lateral (2) parte de su carril natural, junto a la línea de
+    // fondo, y camina hacia el medio espacio hasta ubicarse al lado del
+    // pivote — el recorrido que explica por qué termina formando el
+    // rombo de 3 contra 2 con la defensa.
+    arrows: [
+      { from: { x: 12, y: 78 }, to: { x: 50, y: 66 }, type: "run" },
+    ],
     zones: [{ x: 12, y: 52, width: 55, height: 26, label: "Superioridad 3 vs 2 en salida", variant: "positive" }],
   },
 };

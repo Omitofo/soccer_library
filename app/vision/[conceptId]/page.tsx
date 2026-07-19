@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { VISION_CONCEPTS, VISION_CATEGORY_LABELS, getConceptById } from "@/lib/data/vision";
 import VisionBodyDiagram from "@/components/soccer/VisionBodyDiagram";
 import TacticsBoardSequence from "@/components/soccer/TacticsBoardSequence";
-import { ArrowLeft, CheckCircle, AlertTriangle, Eye, ShieldAlert } from "lucide-react";
+import { ArrowLeft, CheckCircle, AlertTriangle, Eye, ShieldAlert, Info } from "lucide-react";
 
 export function generateStaticParams() {
   return VISION_CONCEPTS.map((c) => ({ conceptId: c.id }));
@@ -143,6 +143,18 @@ export default async function ConceptDetailPage({ params }: ConceptDetailPagePro
                 </ul>
               </div>
             </div>
+
+            {concept.exceptionNote && (
+              <div className="bg-amber-950/10 border border-amber-900/30 p-5 rounded-2xl flex items-start gap-3">
+                <Info className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+                <div>
+                  <h4 className="text-xs font-bold uppercase tracking-widest text-amber-400 mb-1.5">
+                    Excepción a la Regla
+                  </h4>
+                  <p className="text-zinc-300 text-xs md:text-sm leading-relaxed">{concept.exceptionNote}</p>
+                </div>
+              </div>
+            )}
           </section>
 
           {related.length > 0 && (

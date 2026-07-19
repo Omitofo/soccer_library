@@ -16,6 +16,7 @@ export const BLIND_SPOT_DATA: VisionConcept = {
     "Confiar en 'sentir' al defensor por instinto en vez de confirmarlo con la vista.",
     "Girar el cuello demasiado tarde, cuando el balón ya está a un paso y no hay tiempo de ajustar el plan."
   ],
+  exceptionNote: "Excepción a la regla: si vas a devolver el balón de primera intención para una pared (un-dos), no necesitas completar el giro de cuello justo en el instante de recibir. El objetivo de la pared es soltar el balón de inmediato hacia el compañero, no protegerlo bajo presión, así que el chequeo de tu espalda debe hacerse ANTES de pedir la pared (para saber que el camino de regreso está limpio), no durante ella. Forzar el giro completo en ese microsegundo solo te resta velocidad de ejecución sin aportar información nueva.",
   bodyDiagram: {
     playerAngle: 20,
     sectors: [

@@ -42,6 +42,13 @@ export interface VisionConcept {
   execution: string;
   keyPoints: string[];
   commonMistakes: string[];
+  /**
+   * Excepción explícita a la regla general del concepto (ej. cuándo NO
+   * aplica o cuándo se puede saltar el hábito descrito). Se renderiza
+   * como una tarjeta/nota aparte en la página de detalle, para no diluir
+   * los "Errores Comunes" con un caso que en realidad es válido.
+   */
+  exceptionNote?: string;
   bodyDiagram?: BodyDiagramConfig; // diagrama correcto (perfilado-corporal, conciencia-espacial)
   bodyDiagramCaption?: string;
   mistakeDiagram?: BodyDiagramConfig; // comparación: el error común

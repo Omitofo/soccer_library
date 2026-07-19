@@ -11,11 +11,14 @@ const HOME = [
 ];
 
 // Rival: 4-3-3 presionando la salida. a7 es tu marcador directo.
+// El '10' (a10) se desplaza a x=30 en vez de x=50: en la posición por
+// defecto quedaba casi exactamente sobre la línea de pase central →
+// "Tú", lo que confundía visualmente con la marca real (que hace a7).
 const AWAY = [
   goalkeeper("away", "a"),
   ...line(4, 22, "away", "a", 2),
   ...line(3, 42, "away", "a", 6),
-  ...line(3, 64, "away", "a", 9),
+  ...line(3, 64, "away", "a", 9, [18, 30, 82]),
 ];
 
 const BASE = applyMoves([...HOME, ...AWAY], [["h7", { label: "Tú" }]]);
@@ -26,15 +29,17 @@ const step1Players = applyMoves(BASE, [
   ["a7", { highlighted: true }],
 ]);
 
-// Paso 2: el balón viaja. Tu marcador ya arranca a cerrarte el espacio;
-// tú aprovechas ese medio segundo para mirar hacia adelante.
+// Paso 2: el balón viaja. Tu marcador directo (a7) ya arranca a cerrarte
+// el espacio; el interior (a8) se corre a ayudar en el centro. Eso es
+// justo lo que deja libre el carril donde vas a resolver: el que a8
+// abandona al desplazarse hacia adentro.
 const step2Players = applyMoves(step1Players, [
   ["a7", { x: 46, y: 50 }], // el rival reacciona y acorta distancia
-  ["a8", { x: 68, y: 46 }], // el compañero de marca también se reordena
+  ["a8", { x: 68, y: 46 }], // el interior se cierra hacia el centro, dejando su carril
 ]);
 
 // Paso 3: controlas orientado. Tu marcador llega, pero tarde: ya
-// resolviste con el primer toque hacia el espacio que habías visto.
+// resolviste con el primer toque hacia el carril que a8 dejó libre.
 const step3Players = applyMoves(step2Players, [
   ["a7", { x: 48, y: 54 }],
   ["a8", { x: 62, y: 42 }],
@@ -60,14 +65,14 @@ export const SCANNING_DATA: VisionConcept = {
   boardStates: [
     {
       step: 1,
-      caption: "Antes del pase: mientras tu central controla, giras el cuello para ubicar a tu marcador más cercano.",
+      caption: "Antes del pase: mientras tu central controla, giras el cuello para ubicar a tu marcador directo (a7).",
       players: step1Players,
       ball: ballAt(step1Players, "h4"),
       zones: [{ x: 34, y: 34, width: 32, height: 30, label: "Escaneo: marcador ubicado", variant: "positive" }],
     },
     {
       step: 2,
-      caption: "Balón viajando: quitas la vista de la pelota medio segundo y miras el espacio, mientras tu marcador ya corre a cerrarte.",
+      caption: "Balón viajando: tu marcador (a7) ya corre a cerrarte, y el interior (a8) se corre a ayudar en el centro, dejando su carril libre.",
       players: step2Players,
       ball: { x: 56, y: 70 },
       arrows: [
@@ -78,7 +83,7 @@ export const SCANNING_DATA: VisionConcept = {
     },
     {
       step: 3,
-      caption: "Control orientado: el primer toque ya va hacia el espacio que habías descubierto, antes de que tu marcador llegue.",
+      caption: "Control orientado: el primer toque ya va hacia el carril que a8 dejó libre, antes de que tu marcador llegue.",
       players: step3Players,
       ball: ballAt(step3Players, "h7"),
       arrows: [{ from: { x: 50, y: 58 }, to: { x: 75, y: 32 }, type: "dribble" }],

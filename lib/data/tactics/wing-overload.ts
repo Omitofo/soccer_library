@@ -1,4 +1,47 @@
 import { TacticalScheme } from "./types";
+import { goalkeeper, line, applyMoves, ballAt } from "./formations";
+
+// Local: 4-3-3. La idea es amontonar 5 jugadores en el costado izquierdo
+// (x bajo) mientras el lateral derecho (h5) se queda solo, listo para
+// recibir el cambio de orientación.
+const HOME = [
+  goalkeeper("home", "h"),
+  ...line(4, 79, "home", "h", 2, [12, 38, 62, 88]),
+  ...line(3, 62, "home", "h", 6, [20, 50, 80]),
+  ...line(3, 34, "home", "h", 9, [15, 45, 85]),
+];
+
+// Rival: 4-4-2 en bloque bajo, listo para bascular hacia el lado del balón.
+const AWAY = [
+  goalkeeper("away", "a"),
+  ...line(4, 15, "away", "a", 2, [12, 38, 62, 88]),
+  ...line(4, 36, "away", "a", 6, [15, 38, 62, 85]),
+  ...line(2, 55, "away", "a", 10, [38, 62]),
+];
+
+const step1Players = applyMoves([...HOME, ...AWAY], [
+  ["h2", { x: 15, y: 55 }],
+  ["h7", { x: 35, y: 58 }],
+  ["h10", { x: 28, y: 40 }],
+  ["a2", { x: 8, y: 18 }],
+  ["a6", { x: 12, y: 40 }],
+  ["a10", { x: 25, y: 55 }],
+]);
+
+const step2Players = applyMoves(step1Players, [
+  ["h5", { x: 90, y: 55, highlighted: true }],
+  ["h7", { highlighted: true }],
+]);
+
+const step3Players = applyMoves(step2Players, [
+  ["h5", { x: 90, y: 18 }],
+  ["h9", { x: 35, y: 10 }],
+  ["h10", { x: 62, y: 8, highlighted: true }],
+  ["h7", { highlighted: false }],
+  ["a1", { x: 50, y: 4 }],
+  ["a3", { x: 40, y: 12 }],
+  ["a4", { x: 60, y: 12 }],
+]);
 
 export const WING_OVERLOAD: TacticalScheme = {
   id: "sobrecarga-banda",
@@ -17,66 +60,38 @@ export const WING_OVERLOAD: TacticalScheme = {
     "El cambio de orientación llega tarde, cuando el rival ya recompuso su bloque hacia el lado débil."
   ],
   formationContext: "Efectivo en cualquier sistema con amplitud clara por ambos costados (4-3-3, 3-4-3).",
+  formationHome: "4-3-3",
+  formationAway: "4-4-2",
   boardStates: [
     {
       step: 1,
       caption: "Sobrecargamos el costado izquierdo con 5 jugadores para atraer al bloque rival.",
-      players: [
-        { id: "rb", label: "2", x: 15, y: 95, team: "home" },
-        { id: "cb1", label: "4", x: 35, y: 110, team: "home" },
-        { id: "cb2", label: "6", x: 65, y: 110, team: "home" },
-        { id: "lb", label: "3", x: 88, y: 95, team: "home" },
-        { id: "dm", label: "5", x: 45, y: 90, team: "home" },
-        { id: "cm1", label: "8", x: 20, y: 70, team: "home" },
-        { id: "cm2", label: "10", x: 55, y: 75, team: "home" },
-        { id: "rw", label: "7", x: 10, y: 45, team: "home" },
-        { id: "st", label: "9", x: 45, y: 40, team: "home" },
-        { id: "lw", label: "11", x: 30, y: 60, team: "home" },
-        { id: "rrival1", label: "R", x: 15, y: 45, team: "away" },
-        { id: "rrival2", label: "R", x: 30, y: 55, team: "away" },
-        { id: "rrival3", label: "R", x: 45, y: 50, team: "away" }
-      ],
+      players: step1Players,
+      ball: ballAt(step1Players, "h7"),
       zones: [
-        { x: 5, y: 30, width: 55, height: 70, label: "Sobrecarga: 5 vs 3 en banda izquierda", variant: "positive" },
-        { x: 70, y: 30, width: 25, height: 70, label: "Espacio libre (lado débil)", variant: "warning" }
-      ]
+        { x: 5, y: 15, width: 55, height: 65, label: "Sobrecarga: 5 vs 3 en banda izquierda", variant: "positive" },
+        { x: 68, y: 15, width: 28, height: 65, label: "Espacio libre (lado débil)", variant: "warning" },
+      ],
     },
     {
       step: 2,
       caption: "Cambio de orientación: un pase diagonal largo lleva el balón al lateral que quedó libre.",
-      players: [
-        { id: "rb", label: "2", x: 15, y: 95, team: "home" },
-        { id: "cb1", label: "4", x: 35, y: 110, team: "home" },
-        { id: "cb2", label: "6", x: 65, y: 110, team: "home" },
-        { id: "lb", label: "3", x: 90, y: 65, team: "home", highlighted: true },
-        { id: "dm", label: "5", x: 45, y: 90, team: "home" },
-        { id: "cm2", label: "10", x: 55, y: 75, team: "home" },
-        { id: "st", label: "9", x: 45, y: 40, team: "home" },
-        { id: "rrival1", label: "R", x: 15, y: 45, team: "away" },
-        { id: "rrival2", label: "R", x: 30, y: 55, team: "away" },
-        { id: "rclose", label: "R", x: 72, y: 55, team: "away" }
-      ],
-      arrows: [{ from: { x: 45, y: 90 }, to: { x: 90, y: 65 }, type: "pass", curved: true }],
-      zones: [{ x: 75, y: 45, width: 22, height: 30, label: "Recibe con tiempo y espacio", variant: "positive" }]
+      players: step2Players,
+      ball: ballAt(step2Players, "h5"),
+      arrows: [{ from: { x: 35, y: 58 }, to: { x: 90, y: 55 }, type: "pass", curved: true }],
+      zones: [{ x: 75, y: 40, width: 22, height: 30, label: "Recibe con tiempo y espacio", variant: "positive" }],
     },
     {
       step: 3,
-      caption: "Centro al segundo palo: definición tras el cambio de orientación.",
-      players: [
-        { id: "lb", label: "3", x: 90, y: 65, team: "home" },
-        { id: "st", label: "9", x: 35, y: 12, team: "home" },
-        { id: "lw", label: "11", x: 60, y: 10, team: "home", highlighted: true },
-        { id: "rgk", label: "R", x: 50, y: 5, team: "away" },
-        { id: "rcb", label: "R", x: 40, y: 15, team: "away" }
-      ],
-      ball: { x: 60, y: 10 },
+      caption: "Centro al área: definición tras el cambio de orientación.",
+      players: step3Players,
+      ball: ballAt(step3Players, "h10"),
       arrows: [
-        { from: { x: 90, y: 65 }, to: { x: 60, y: 10 }, type: "pass", curved: true },
-        { from: { x: 45, y: 40 }, to: { x: 35, y: 12 }, type: "run" },
-        { from: { x: 30, y: 60 }, to: { x: 60, y: 10 }, type: "run" }
+        { from: { x: 90, y: 18 }, to: { x: 62, y: 8 }, type: "pass", curved: true },
+        { from: { x: 45, y: 34 }, to: { x: 35, y: 10 }, type: "run" },
       ],
-      zones: [{ x: 20, y: 4, width: 60, height: 20, label: "Área rival: segundo palo", variant: "positive" }]
-    }
+      zones: [{ x: 20, y: 2, width: 60, height: 20, label: "Área rival: definición", variant: "positive" }],
+    },
   ],
-  relatedSchemeIds: ["salida-lateral-falso"]
+  relatedSchemeIds: ["salida-lateral-falso"],
 };

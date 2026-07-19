@@ -1,4 +1,40 @@
 import { TacticalScheme } from "./types";
+import { goalkeeper, line, applyMoves, ballAt } from "./formations";
+
+// Local: 4-3-3 en plena fase ofensiva, con línea de mediocampo y ataque
+// muy adelantadas (el riesgo que describe el concepto).
+const HOME = [
+  goalkeeper("home", "h"),
+  ...line(4, 80, "home", "h", 2), // defensa se queda cubriendo la espalda
+  ...line(3, 45, "home", "h", 6), // mediocampo adelantado
+  ...line(3, 18, "home", "h", 9), // ataque muy alto, a las puertas del área rival
+];
+
+// Rival: bloque bajo defendiendo el asedio, con los delanteros altos
+// esperando el contragolpe.
+const AWAY = [
+  goalkeeper("away", "a"),
+  ...line(4, 18, "away", "a", 2), // defensa muy replegada
+  ...line(3, 40, "away", "a", 6), // mediocampo
+  ...line(3, 68, "away", "a", 9), // delanteros esperando arriba para robar y salir
+];
+
+const step1Players = applyMoves([...HOME, ...AWAY], [
+  ["a7", { x: 55, y: 32, highlighted: true }],
+]);
+
+const step2Players = applyMoves(step1Players, [
+  ["h9", { x: 35, y: 40, highlighted: true }],
+  ["h10", { x: 55, y: 28, highlighted: true }],
+  ["h11", { x: 68, y: 45, highlighted: true }],
+]);
+
+const step3Players = applyMoves(step2Players, [
+  ["h10", { x: 50, y: 10, highlighted: true }],
+  ["h11", { x: 75, y: 15 }],
+  ["h9", { x: 25, y: 20 }],
+  ["a7", { x: 55, y: 34, highlighted: false }],
+]);
 
 export const GEGENPRESSING: TacticalScheme = {
   id: "gegenpressing",
@@ -17,73 +53,39 @@ export const GEGENPRESSING: TacticalScheme = {
     "Se abandona la presión a los 2 segundos y se repliega tarde, sin haber decidido claramente cuál de las dos opciones tomar."
   ],
   formationContext: "Exige jugadores con gran capacidad física; muy asociado al Juego de Posición neerlandés y a Guardiola.",
+  formationHome: "4-3-3",
+  formationAway: "4-3-3",
   boardStates: [
     {
       step: 1,
-      caption: "Perdemos el balón atacando en campo rival. El rival intercepta con espacio por delante.",
-      players: [
-        { id: "gk", label: "1", x: 50, y: 135, team: "home" },
-        { id: "rb", label: "2", x: 25, y: 95, team: "home" },
-        { id: "cb1", label: "4", x: 40, y: 100, team: "home" },
-        { id: "cb2", label: "6", x: 60, y: 100, team: "home" },
-        { id: "lb", label: "3", x: 75, y: 95, team: "home" },
-        { id: "dm", label: "5", x: 50, y: 85, team: "home" },
-        { id: "cm1", label: "8", x: 35, y: 60, team: "home" },
-        { id: "cm2", label: "10", x: 65, y: 60, team: "home" },
-        { id: "rw", label: "7", x: 20, y: 35, team: "home" },
-        { id: "st", label: "9", x: 50, y: 25, team: "home" },
-        { id: "lw", label: "11", x: 80, y: 35, team: "home" },
-        { id: "rint", label: "R", x: 55, y: 30, team: "away", highlighted: true },
-        { id: "rcb1", label: "R", x: 35, y: 20, team: "away" },
-        { id: "rcb2", label: "R", x: 65, y: 20, team: "away" }
-      ],
-      ball: { x: 55, y: 30 },
-      zones: [{ x: 30, y: 12, width: 45, height: 35, label: "Ventana de 5 segundos", variant: "warning" }]
+      caption: "Perdemos el balón atacando en campo rival. El mediocentro rival intercepta con espacio por delante.",
+      players: step1Players,
+      ball: ballAt(step1Players, "a7"),
+      zones: [{ x: 30, y: 14, width: 45, height: 32, label: "Ventana de 5 segundos", variant: "warning" }],
     },
     {
       step: 2,
       caption: "Los 3 jugadores más cercanos cierran un triángulo de presión sobre el rival. La línea de fondo se mantiene.",
-      players: [
-        { id: "gk", label: "1", x: 50, y: 135, team: "home" },
-        { id: "rb", label: "2", x: 25, y: 95, team: "home" },
-        { id: "cb1", label: "4", x: 40, y: 100, team: "home" },
-        { id: "cb2", label: "6", x: 60, y: 100, team: "home" },
-        { id: "lb", label: "3", x: 75, y: 95, team: "home" },
-        { id: "dm", label: "5", x: 50, y: 68, team: "home" },
-        { id: "cm1", label: "8", x: 35, y: 40, team: "home", highlighted: true },
-        { id: "cm2", label: "10", x: 68, y: 45, team: "home", highlighted: true },
-        { id: "rw", label: "7", x: 20, y: 35, team: "home" },
-        { id: "st", label: "9", x: 55, y: 28, team: "home", highlighted: true },
-        { id: "lw", label: "11", x: 80, y: 35, team: "home" },
-        { id: "rint", label: "R", x: 55, y: 30, team: "away" }
-      ],
-      ball: { x: 55, y: 30 },
+      players: step2Players,
+      ball: ballAt(step2Players, "a7"),
       arrows: [
-        { from: { x: 50, y: 25 }, to: { x: 55, y: 30 }, type: "press" },
-        { from: { x: 65, y: 60 }, to: { x: 68, y: 45 }, type: "press" },
-        { from: { x: 35, y: 60 }, to: { x: 35, y: 40 }, type: "press" }
+        { from: { x: 18, y: 18 }, to: { x: 35, y: 40 }, type: "press" },
+        { from: { x: 82, y: 18 }, to: { x: 68, y: 45 }, type: "press" },
+        { from: { x: 50, y: 18 }, to: { x: 55, y: 28 }, type: "press" },
       ],
-      zones: [{ x: 28, y: 25, width: 45, height: 25, label: "Triángulo de presión", variant: "positive" }]
+      zones: [{ x: 28, y: 22, width: 45, height: 26, label: "Triángulo de presión", variant: "positive" }],
     },
     {
       step: 3,
       caption: "Recuperamos y transicionamos verticalmente de inmediato, sin tocar de más.",
-      players: [
-        { id: "gk", label: "1", x: 50, y: 135, team: "home" },
-        { id: "cb1", label: "4", x: 40, y: 100, team: "home" },
-        { id: "cb2", label: "6", x: 60, y: 100, team: "home" },
-        { id: "dm", label: "5", x: 50, y: 68, team: "home" },
-        { id: "cm1", label: "8", x: 40, y: 42, team: "home" },
-        { id: "st", label: "9", x: 55, y: 28, team: "home", highlighted: true },
-        { id: "lw", label: "11", x: 80, y: 35, team: "home" }
-      ],
-      ball: { x: 55, y: 28 },
+      players: step3Players,
+      ball: ballAt(step3Players, "h10"),
       arrows: [
         { from: { x: 55, y: 28 }, to: { x: 50, y: 10 }, type: "dribble" },
-        { from: { x: 80, y: 35 }, to: { x: 65, y: 15 }, type: "run" }
+        { from: { x: 68, y: 45 }, to: { x: 75, y: 15 }, type: "run" },
       ],
-      zones: [{ x: 30, y: 5, width: 40, height: 20, label: "Transición vertical inmediata", variant: "positive" }]
-    }
+      zones: [{ x: 30, y: 4, width: 40, height: 20, label: "Transición vertical inmediata", variant: "positive" }],
+    },
   ],
-  relatedSchemeIds: ["unit-pressing", "contragolpe"]
+  relatedSchemeIds: ["unit-pressing", "contragolpe"],
 };

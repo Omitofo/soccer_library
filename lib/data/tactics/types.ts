@@ -13,11 +13,20 @@ export const CATEGORY_LABELS: Record<TacticCategory, string> = {
   transiciones: "Transiciones",
 };
 
+/** Formaciones estándar soportadas por el generador de pizarras (ver formations.ts). */
+export type FormationName =
+  | "4-3-3"
+  | "4-4-2"
+  | "4-2-3-1"
+  | "3-4-3"
+  | "3-5-2"
+  | "5-3-2";
+
 export interface PitchPlayer {
   id: string;
   label: string; // dorsal, ej. "9"
   x: number; // 0-100 (izquierda-derecha)
-  y: number; // 0-100 (0 = arco rival, 100 = arco propio)
+  y: number; // 0-100 (0 = arco rival, 100 = arco propio). ~1 unidad ≈ 1 metro real.
   team: "home" | "away";
   highlighted?: boolean; // resalta al jugador clave del paso (glow)
 }
@@ -41,8 +50,10 @@ export interface PitchZone {
 export interface BoardState {
   step: number;
   caption: string; // qué está pasando en este paso, en lenguaje simple
+  /** SIEMPRE 22: 11 jugadores "home" + 11 "away". Nunca menos. */
   players: PitchPlayer[];
-  ball?: { x: number; y: number };
+  /** El balón SIEMPRE está en el tablero, en los pies de alguien o en tránsito. */
+  ball: { x: number; y: number };
   arrows?: PitchArrow[];
   zones?: PitchZone[];
 }
@@ -57,6 +68,10 @@ export interface TacticalScheme {
   keyPoints: string[];
   commonMistakes: string[];
   formationContext?: string;
+  /** Formación base del equipo que protagoniza el esquema. */
+  formationHome?: FormationName;
+  /** Formación base del equipo rival, usada como contraste táctico. */
+  formationAway?: FormationName;
   boardStates: BoardState[];
   relatedSchemeIds?: string[];
 }

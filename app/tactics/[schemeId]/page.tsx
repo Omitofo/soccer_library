@@ -57,7 +57,11 @@ export default async function SchemeDetailPage({ params }: SchemeDetailPageProps
             <h2 className="text-xl font-bold text-zinc-100 border-b border-zinc-800 pb-3">
               La Pizarra: Paso a Paso
             </h2>
-            <TacticsBoardSequence states={scheme.boardStates} />
+            <TacticsBoardSequence
+              states={scheme.boardStates}
+              formationHome={scheme.formationHome}
+              formationAway={scheme.formationAway}
+            />
           </section>
 
           <section className="space-y-6">

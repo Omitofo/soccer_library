@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import TacticsBoard from "./TacticsBoard";
-import type { BoardState } from "@/lib/data/tactics/types";
+import type { BoardState, FormationName } from "@/lib/data/tactics/types";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 function LegendItem({ color, label, dashed }: { color: string; label: string; dashed?: boolean }) {
@@ -20,7 +20,28 @@ function LegendItem({ color, label, dashed }: { color: string; label: string; da
   );
 }
 
-export default function TacticsBoardSequence({ states }: { states: BoardState[] }) {
+function TeamDot({ color, label }: { color: string; label: string }) {
+  return (
+    <div className="flex items-center gap-1.5">
+      <span className="inline-block w-2.5 h-2.5 rounded-full" style={{ backgroundColor: color }} />
+      {label}
+    </div>
+  );
+}
+
+interface TacticsBoardSequenceProps {
+  states: BoardState[];
+  /** Formación del equipo protagonista (verde). */
+  formationHome?: FormationName;
+  /** Formación del equipo rival (ámbar), usada como contraste táctico. */
+  formationAway?: FormationName;
+}
+
+export default function TacticsBoardSequence({
+  states,
+  formationHome,
+  formationAway,
+}: TacticsBoardSequenceProps) {
   const [step, setStep] = useState(0);
   const current = states[step];
   const isFirst = step === 0;
@@ -28,6 +49,21 @@ export default function TacticsBoardSequence({ states }: { states: BoardState[] 
 
   return (
     <div className="space-y-4">
+      {(formationHome || formationAway) && (
+        <div className="flex flex-wrap items-center justify-center gap-2">
+          {formationHome && (
+            <span className="text-[10px] font-mono font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded-full">
+              Local: {formationHome}
+            </span>
+          )}
+          {formationAway && (
+            <span className="text-[10px] font-mono font-bold text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 rounded-full">
+              Rival: {formationAway}
+            </span>
+          )}
+        </div>
+      )}
+
       <div className="bg-zinc-950 border border-zinc-800 rounded-2xl p-3 md:p-5 shadow-xl">
         <TacticsBoard state={current} className="w-full max-w-xs md:max-w-sm mx-auto h-auto block" />
       </div>
@@ -78,6 +114,8 @@ export default function TacticsBoardSequence({ states }: { states: BoardState[] 
       </div>
 
       <div className="flex flex-wrap gap-x-4 gap-y-1.5 justify-center text-[10px] font-mono text-zinc-500 pt-3 border-t border-zinc-900">
+        <TeamDot color="#10b981" label="Local" />
+        <TeamDot color="#f59e0b" label="Rival" />
         <LegendItem color="#34d399" label="Pase" />
         <LegendItem color="#a1a1aa" label="Movimiento sin balón" dashed />
         <LegendItem color="#f87171" label="Presión" dashed />

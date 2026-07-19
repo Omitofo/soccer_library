@@ -1,4 +1,42 @@
 import { TacticalScheme } from "./types";
+import { goalkeeper, line, applyMoves, ballAt } from "./formations";
+
+// Local: 4-3-3 defendiendo en bloque medio. La clave del esquema es que
+// la distancia entre la línea defensiva (y=74) y la de mediocampo (y=62)
+// es de 12 unidades ≈ 12 metros: la regla que explica el texto.
+const HOME = [
+  goalkeeper("home", "h"),
+  ...line(4, 74, "home", "h", 2), // defensa
+  ...line(3, 62, "home", "h", 6), // mediocampo (12m por delante de la defensa)
+  ...line(3, 42, "home", "h", 9), // delanteros replegados, ayudando al bloque
+];
+
+// Rival: 4-2-3-1 en fase de construcción, buscando meter al '9' en el
+// pasillo entre las dos líneas del bloque local.
+const AWAY = [
+  goalkeeper("away", "a"),
+  ...line(4, 20, "away", "a", 2), // defensa
+  ...line(2, 38, "away", "a", 6), // doble pivote
+  ...line(3, 52, "away", "a", 8), // mediapuntas
+  ...line(1, 64, "away", "a", 11), // único punta, buscando la espalda del bloque
+];
+
+const step1Players = applyMoves([...HOME, ...AWAY], [
+  ["a11", { highlighted: true }],
+  ["h7", { highlighted: true }],
+]);
+
+const step2Players = applyMoves([...HOME, ...AWAY], [
+  ["h2", { x: 6 }],
+  ["h3", { x: 28 }],
+  ["h4", { x: 54 }],
+  ["h5", { x: 80 }],
+  ["h6", { x: 10 }],
+  ["h7", { x: 42 }],
+  ["h8", { x: 74 }],
+  ["a2", { x: 6, y: 46, highlighted: true }],
+  ["a11", { x: 22, y: 58 }],
+]);
 
 export const COMPACT_BLOCK: TacticalScheme = {
   id: "bloque-compacto",
@@ -17,53 +55,28 @@ export const COMPACT_BLOCK: TacticalScheme = {
     "El mediocampo se queda estático mientras la defensa retrocede, duplicando la distancia interlineal peligrosamente."
   ],
   formationContext: "Ideal en sistemas de 4 defensas con 3 mediocampistas (4-3-3 / 4-2-3-1).",
+  formationHome: "4-3-3",
+  formationAway: "4-2-3-1",
   boardStates: [
     {
       step: 1,
-      caption: "El rival construye y estira el campo buscando abrir la distancia entre tus líneas.",
-      players: [
-        { id: "gk", label: "1", x: 50, y: 140, team: "home" },
-        { id: "rb", label: "2", x: 18, y: 108, team: "home" },
-        { id: "cb1", label: "4", x: 38, y: 112, team: "home" },
-        { id: "cb2", label: "6", x: 62, y: 112, team: "home" },
-        { id: "lb", label: "3", x: 82, y: 108, team: "home" },
-        { id: "dm", label: "5", x: 50, y: 96, team: "home" },
-        { id: "cm1", label: "8", x: 32, y: 90, team: "home" },
-        { id: "cm2", label: "10", x: 68, y: 90, team: "home" },
-        { id: "rw", label: "7", x: 20, y: 68, team: "home" },
-        { id: "st", label: "9", x: 50, y: 65, team: "home" },
-        { id: "lw", label: "11", x: 80, y: 68, team: "home" },
-        { id: "rcb1", label: "R", x: 35, y: 40, team: "away" },
-        { id: "rcb2", label: "R", x: 65, y: 40, team: "away" },
-        { id: "rcm", label: "R", x: 50, y: 55, team: "away" }
-      ],
-      ball: { x: 50, y: 55 },
-      arrows: [{ from: { x: 35, y: 40 }, to: { x: 50, y: 55 }, type: "pass" }],
-      zones: [{ x: 25, y: 88, width: 50, height: 24, label: "Distancia interlineal: 12m", variant: "positive" }]
+      caption: "El rival construye y estira el campo buscando meter a su '9' entre tus líneas.",
+      players: step1Players,
+      ball: ballAt(step1Players, "a4"),
+      arrows: [{ from: { x: 62, y: 20 }, to: { x: 50, y: 64 }, type: "pass" }],
+      zones: [{ x: 10, y: 62, width: 80, height: 12, label: "Distancia interlineal: 12 metros", variant: "positive" }],
     },
     {
       step: 2,
-      caption: "El rival ataca por el costado izquierdo. El bloque entero se desplaza hacia el balón sin romper la distancia.",
-      players: [
-        { id: "gk", label: "1", x: 45, y: 140, team: "home" },
-        { id: "rb", label: "2", x: 12, y: 100, team: "home", highlighted: true },
-        { id: "cb1", label: "4", x: 30, y: 104, team: "home" },
-        { id: "cb2", label: "6", x: 58, y: 108, team: "home" },
-        { id: "lb", label: "3", x: 78, y: 108, team: "home" },
-        { id: "dm", label: "5", x: 40, y: 88, team: "home" },
-        { id: "cm1", label: "8", x: 22, y: 82, team: "home" },
-        { id: "cm2", label: "10", x: 60, y: 88, team: "home" },
-        { id: "rw", label: "7", x: 15, y: 60, team: "home" },
-        { id: "st", label: "9", x: 45, y: 62, team: "home" },
-        { id: "lw", label: "11", x: 78, y: 66, team: "home" },
-        { id: "rw-rival", label: "R", x: 12, y: 55, team: "away" },
-        { id: "rcm", label: "R", x: 30, y: 50, team: "away" },
-        { id: "rcb1", label: "R", x: 35, y: 35, team: "away" }
+      caption: "El rival ataca por tu costado izquierdo. El bloque entero se desplaza hacia el balón sin romper la distancia.",
+      players: step2Players,
+      ball: ballAt(step2Players, "a2"),
+      arrows: [
+        { from: { x: 12, y: 20 }, to: { x: 6, y: 46 }, type: "run" },
+        { from: { x: 10, y: 74 }, to: { x: 8, y: 56 }, type: "press", curved: true },
       ],
-      ball: { x: 12, y: 55 },
-      arrows: [{ from: { x: 22, y: 82 }, to: { x: 15, y: 62 }, type: "press" }],
-      zones: [{ x: 5, y: 86, width: 45, height: 24, label: "Bloque desplazado, misma distancia", variant: "positive" }]
-    }
+      zones: [{ x: 2, y: 62, width: 40, height: 12, label: "Bloque desplazado, misma distancia", variant: "positive" }],
+    },
   ],
-  relatedSchemeIds: ["unit-pressing", "gegenpressing"]
+  relatedSchemeIds: ["unit-pressing", "gegenpressing"],
 };

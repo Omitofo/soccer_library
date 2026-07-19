@@ -24,11 +24,11 @@ export const PASSING_LANE_DATA: VisionConcept = {
         { id: "self", label: "Tú", x: 50, y: 80, team: "home", highlighted: true },
         { id: "st", label: "9", x: 50, y: 40, team: "home" },
         { id: "int", label: "8", x: 78, y: 65, team: "home" },
-        { id: "origin", label: "5", x: 30, y: 105, team: "home" },
+        { id: "origin", label: "5", x: 30, y: 93, team: "home" },
         { id: "mk", label: "R", x: 52, y: 55, team: "away" }
       ],
-      ball: { x: 40, y: 92 },
-      arrows: [{ from: { x: 30, y: 105 }, to: { x: 50, y: 80 }, type: "pass" }],
+      ball: { x: 40, y: 88 },
+      arrows: [{ from: { x: 30, y: 93 }, to: { x: 50, y: 80 }, type: "pass" }],
       zones: [
         { x: 40, y: 40, width: 24, height: 20, label: "Línea cerrada", variant: "warning" },
         { x: 62, y: 55, width: 26, height: 22, label: "Línea abierta", variant: "positive" }

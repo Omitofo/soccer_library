@@ -22,10 +22,10 @@ export const SCANNING_DATA: VisionConcept = {
       caption: "Antes del pase: mientras tu central controla, giras el cuello para ubicar a tu marcador más cercano.",
       players: [
         { id: "self", label: "Tú", x: 55, y: 70, team: "home", highlighted: true },
-        { id: "cb", label: "4", x: 50, y: 105, team: "home" },
+        { id: "cb", label: "4", x: 50, y: 92, team: "home" },
         { id: "mk", label: "R", x: 62, y: 60, team: "away" }
       ],
-      ball: { x: 50, y: 105 },
+      ball: { x: 50, y: 92 },
       zones: [{ x: 45, y: 45, width: 30, height: 30, label: "Escaneo: marcador ubicado", variant: "positive" }]
     },
     {
@@ -33,11 +33,11 @@ export const SCANNING_DATA: VisionConcept = {
       caption: "Balón viajando: en el instante exacto en que sale el pase, quitas la vista del balón medio segundo y miras el espacio.",
       players: [
         { id: "self", label: "Tú", x: 55, y: 70, team: "home", highlighted: true },
-        { id: "cb", label: "4", x: 50, y: 105, team: "home" },
+        { id: "cb", label: "4", x: 50, y: 92, team: "home" },
         { id: "mk", label: "R", x: 62, y: 60, team: "away" }
       ],
-      ball: { x: 53, y: 88 },
-      arrows: [{ from: { x: 50, y: 105 }, to: { x: 55, y: 70 }, type: "pass" }],
+      ball: { x: 53, y: 82 },
+      arrows: [{ from: { x: 50, y: 92 }, to: { x: 55, y: 70 }, type: "pass" }],
       zones: [{ x: 65, y: 40, width: 28, height: 25, label: "Espacio de ataque detectado", variant: "positive" }]
     },
     {

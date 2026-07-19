@@ -1,4 +1,40 @@
 import { TacticalScheme } from "./types";
+import { goalkeeper, line, applyMoves, ballAt } from "./formations";
+
+// Local: 4-3-3 presionando alto y en diagonal hacia la banda.
+const HOME = [
+  goalkeeper("home", "h"),
+  ...line(4, 76, "home", "h", 2), // defensa adelantada, sube con el bloque
+  ...line(3, 58, "home", "h", 6), // mediocampo
+  ...line(3, 30, "home", "h", 9), // delanteros presionando la salida
+];
+
+// Rival: 4-2-3-1 construyendo desde atrás con doble pivote.
+const AWAY = [
+  goalkeeper("away", "a"),
+  ...line(4, 22, "away", "a", 2), // defensa
+  ...line(2, 40, "away", "a", 6), // doble pivote
+  ...line(3, 54, "away", "a", 8), // mediapuntas
+  ...line(1, 66, "away", "a", 11), // punta
+];
+
+const step1Players = applyMoves([...HOME, ...AWAY], [
+  ["h10", { highlighted: true }],
+  ["a7", { highlighted: true }],
+]);
+
+const step2Players = applyMoves([...HOME, ...AWAY], [
+  ["h5", { x: 92, y: 66 }],
+  ["h8", { x: 90, y: 48 }],
+  ["h11", { x: 92, y: 20, highlighted: true }],
+  ["a5", { highlighted: true }],
+]);
+
+const step3Players = applyMoves(step2Players, [
+  ["h11", { x: 90, y: 26 }],
+  ["h8", { x: 90, y: 42 }],
+  ["a5", { x: 90, y: 28 }],
+]);
 
 export const UNIT_PRESSING: TacticalScheme = {
   id: "unit-pressing",
@@ -17,76 +53,36 @@ export const UNIT_PRESSING: TacticalScheme = {
     "Se presiona sin haber tapado antes la línea de pase interior, permitiendo al rival salir por el centro con facilidad."
   ],
   formationContext: "Muy efectivo en 4-3-3 con extremos que puedan presionar en diagonal hacia el lateral rival.",
+  formationHome: "4-3-3",
+  formationAway: "4-2-3-1",
   boardStates: [
     {
       step: 1,
       caption: "El rival construye desde el central. Nuestro '9' tapa el pasillo interior hacia el volante.",
-      players: [
-        { id: "gk", label: "1", x: 50, y: 138, team: "home" },
-        { id: "rb", label: "2", x: 20, y: 100, team: "home" },
-        { id: "cb1", label: "4", x: 38, y: 105, team: "home" },
-        { id: "cb2", label: "6", x: 62, y: 105, team: "home" },
-        { id: "lb", label: "3", x: 80, y: 100, team: "home" },
-        { id: "dm", label: "5", x: 50, y: 90, team: "home" },
-        { id: "cm1", label: "8", x: 30, y: 80, team: "home" },
-        { id: "cm2", label: "10", x: 70, y: 80, team: "home" },
-        { id: "rw", label: "7", x: 15, y: 55, team: "home" },
-        { id: "st", label: "9", x: 50, y: 50, team: "home", highlighted: true },
-        { id: "lw", label: "11", x: 85, y: 55, team: "home" },
-        { id: "rcb1", label: "R", x: 35, y: 35, team: "away" },
-        { id: "rcb2", label: "R", x: 65, y: 35, team: "away", highlighted: true },
-        { id: "rlateral", label: "R", x: 85, y: 42, team: "away" },
-        { id: "rvolante", label: "R", x: 50, y: 55, team: "away" }
-      ],
-      ball: { x: 65, y: 35 },
-      arrows: [{ from: { x: 50, y: 50 }, to: { x: 50, y: 55 }, type: "press" }],
-      zones: [{ x: 40, y: 46, width: 20, height: 16, label: "Pasillo interior tapado", variant: "positive" }]
+      players: step1Players,
+      ball: ballAt(step1Players, "a4"),
+      arrows: [{ from: { x: 50, y: 30 }, to: { x: 60, y: 40 }, type: "press" }],
+      zones: [{ x: 40, y: 26, width: 30, height: 20, label: "Pasillo interior tapado", variant: "positive" }],
     },
     {
       step: 2,
       caption: "Sin pase interior disponible, el rival fuerza el pase hacia su lateral. Se activa el disparador.",
-      players: [
-        { id: "gk", label: "1", x: 50, y: 138, team: "home" },
-        { id: "rb", label: "2", x: 20, y: 100, team: "home" },
-        { id: "cb1", label: "4", x: 38, y: 105, team: "home" },
-        { id: "cb2", label: "6", x: 62, y: 105, team: "home" },
-        { id: "lb", label: "3", x: 80, y: 100, team: "home" },
-        { id: "dm", label: "5", x: 58, y: 88, team: "home" },
-        { id: "cm1", label: "8", x: 30, y: 80, team: "home" },
-        { id: "cm2", label: "10", x: 78, y: 70, team: "home" },
-        { id: "rw", label: "7", x: 85, y: 45, team: "home", highlighted: true },
-        { id: "st", label: "9", x: 55, y: 48, team: "home" },
-        { id: "lw", label: "11", x: 85, y: 60, team: "home" },
-        { id: "rcb2", label: "R", x: 65, y: 35, team: "away" },
-        { id: "rlateral", label: "R", x: 85, y: 42, team: "away" }
-      ],
-      ball: { x: 85, y: 42 },
+      players: step2Players,
+      ball: ballAt(step2Players, "a5"),
       arrows: [
-        { from: { x: 65, y: 35 }, to: { x: 85, y: 42 }, type: "pass" },
-        { from: { x: 15, y: 55 }, to: { x: 85, y: 45 }, type: "press", curved: true }
+        { from: { x: 62, y: 22 }, to: { x: 88, y: 22 }, type: "pass" },
+        { from: { x: 82, y: 30 }, to: { x: 92, y: 22 }, type: "press", curved: true },
       ],
-      zones: [{ x: 72, y: 28, width: 26, height: 32, label: "Zona de ahogo: línea de cal", variant: "warning" }]
+      zones: [{ x: 74, y: 8, width: 26, height: 30, label: "Zona de ahogo: línea de cal", variant: "warning" }],
     },
     {
       step: 3,
       caption: "Cierre de pinza contra la banda: el lateral rival no tiene salida y perdemos el balón.",
-      players: [
-        { id: "gk", label: "1", x: 50, y: 138, team: "home" },
-        { id: "rb", label: "2", x: 20, y: 100, team: "home" },
-        { id: "cb1", label: "4", x: 38, y: 105, team: "home" },
-        { id: "cb2", label: "6", x: 62, y: 100, team: "home" },
-        { id: "lb", label: "3", x: 80, y: 85, team: "home" },
-        { id: "dm", label: "5", x: 60, y: 82, team: "home" },
-        { id: "cm1", label: "8", x: 40, y: 75, team: "home" },
-        { id: "cm2", label: "10", x: 78, y: 60, team: "home", highlighted: true },
-        { id: "rw", label: "7", x: 88, y: 40, team: "home", highlighted: true },
-        { id: "st", label: "9", x: 55, y: 48, team: "home" },
-        { id: "lw", label: "11", x: 80, y: 55, team: "home" },
-        { id: "rlateral", label: "R", x: 85, y: 42, team: "away" }
-      ],
-      ball: { x: 74, y: 50 },
-      zones: [{ x: 65, y: 38, width: 20, height: 20, label: "Balón recuperado", variant: "positive" }]
-    }
+      players: step3Players,
+      ball: ballAt(step3Players, "a5"),
+      arrows: [{ from: { x: 90, y: 42 }, to: { x: 90, y: 28 }, type: "press" }],
+      zones: [{ x: 76, y: 16, width: 22, height: 24, label: "Balón recuperado", variant: "positive" }],
+    },
   ],
-  relatedSchemeIds: ["bloque-compacto", "gegenpressing"]
+  relatedSchemeIds: ["bloque-compacto", "gegenpressing"],
 };

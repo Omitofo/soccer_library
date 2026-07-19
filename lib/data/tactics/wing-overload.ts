@@ -11,7 +11,7 @@ const HOME = [
   ...line(3, 34, "home", "h", 9, [15, 45, 85]),
 ];
 
-// Rival: 4-4-2 en bloque bajo, listo para bascular hacia el lado del balón.
+// Rival: 4-4-2 en bloque bajo.
 const AWAY = [
   goalkeeper("away", "a"),
   ...line(4, 15, "away", "a", 2, [12, 38, 62, 88]),
@@ -19,20 +19,34 @@ const AWAY = [
   ...line(2, 55, "away", "a", 10, [38, 62]),
 ];
 
+// Paso 1: el rival bascula (se desplaza en bloque) hacia el lado
+// sobrecargado para tapar todas las líneas de pase cercanas al balón.
 const step1Players = applyMoves([...HOME, ...AWAY], [
   ["h2", { x: 15, y: 55 }],
   ["h7", { x: 35, y: 58 }],
   ["h10", { x: 28, y: 40 }],
   ["a2", { x: 8, y: 18 }],
+  ["a3", { x: 28, y: 16 }],
   ["a6", { x: 12, y: 40 }],
+  ["a7", { x: 30, y: 38 }],
   ["a10", { x: 25, y: 55 }],
+  ["a5", { x: 78, y: 20 }], // el lateral débil se cierra un poco hacia el centro
+  ["a9", { x: 70, y: 40 }],
 ]);
 
+// Paso 2: cambio de orientación. El rival reacciona tarde: recién
+// empieza a recomponer el bloque hacia el lado que quedó libre.
 const step2Players = applyMoves(step1Players, [
   ["h5", { x: 90, y: 55, highlighted: true }],
   ["h7", { highlighted: true }],
+  ["a5", { x: 82, y: 32 }], // corre a cerrar el espacio, pero llega tarde
+  ["a9", { x: 78, y: 38 }],
+  ["a4", { x: 66, y: 20 }],
+  ["a11", { x: 60, y: 55 }],
 ]);
 
+// Paso 3: el rival termina de recomponerse en su propia área, marcando
+// a los atacantes que llegan al remate.
 const step3Players = applyMoves(step2Players, [
   ["h5", { x: 90, y: 18 }],
   ["h9", { x: 35, y: 10 }],
@@ -41,6 +55,8 @@ const step3Players = applyMoves(step2Players, [
   ["a1", { x: 50, y: 4 }],
   ["a3", { x: 40, y: 12 }],
   ["a4", { x: 60, y: 12 }],
+  ["a5", { x: 75, y: 14 }], // recupera para tapar el segundo palo
+  ["a2", { x: 30, y: 16 }], // vuelve a marcar el primer palo
 ]);
 
 export const WING_OVERLOAD: TacticalScheme = {
@@ -65,30 +81,34 @@ export const WING_OVERLOAD: TacticalScheme = {
   boardStates: [
     {
       step: 1,
-      caption: "Sobrecargamos el costado izquierdo con 5 jugadores para atraer al bloque rival.",
+      caption: "Sobrecargamos el costado izquierdo con 5 jugadores. Todo el bloque rival bascula hacia ese lado para taparlo.",
       players: step1Players,
       ball: ballAt(step1Players, "h7"),
       zones: [
-        { x: 5, y: 15, width: 55, height: 65, label: "Sobrecarga: 5 vs 3 en banda izquierda", variant: "positive" },
+        { x: 5, y: 15, width: 55, height: 65, label: "Sobrecarga: 5 vs 5 en banda izquierda", variant: "positive" },
         { x: 68, y: 15, width: 28, height: 65, label: "Espacio libre (lado débil)", variant: "warning" },
       ],
     },
     {
       step: 2,
-      caption: "Cambio de orientación: un pase diagonal largo lleva el balón al lateral que quedó libre.",
+      caption: "Cambio de orientación: el pase diagonal llega antes de que el rival termine de recomponer su bloque hacia ese costado.",
       players: step2Players,
       ball: ballAt(step2Players, "h5"),
-      arrows: [{ from: { x: 35, y: 58 }, to: { x: 90, y: 55 }, type: "pass", curved: true }],
+      arrows: [
+        { from: { x: 35, y: 58 }, to: { x: 90, y: 55 }, type: "pass", curved: true },
+        { from: { x: 78, y: 20 }, to: { x: 82, y: 32 }, type: "run" },
+      ],
       zones: [{ x: 75, y: 40, width: 22, height: 30, label: "Recibe con tiempo y espacio", variant: "positive" }],
     },
     {
       step: 3,
-      caption: "Centro al área: definición tras el cambio de orientación.",
+      caption: "El rival ya recompuso su línea en el área: centro al segundo palo para definir.",
       players: step3Players,
       ball: ballAt(step3Players, "h10"),
       arrows: [
         { from: { x: 90, y: 18 }, to: { x: 62, y: 8 }, type: "pass", curved: true },
         { from: { x: 45, y: 34 }, to: { x: 35, y: 10 }, type: "run" },
+        { from: { x: 82, y: 32 }, to: { x: 75, y: 14 }, type: "run" },
       ],
       zones: [{ x: 20, y: 2, width: 60, height: 20, label: "Área rival: definición", variant: "positive" }],
     },

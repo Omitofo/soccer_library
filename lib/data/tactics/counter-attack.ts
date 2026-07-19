@@ -18,22 +18,40 @@ const AWAY = [
   ...line(3, 8, "away", "a", 9),
 ];
 
+// Paso 1: el rival pierde el balón. El interceptor local (h7) roba;
+// el rival más cercano (a3) reacciona de inmediato para cerrarle el paso.
 const step1Players = applyMoves([...HOME, ...AWAY], [
   ["h7", { highlighted: true }],
-  ["a3", { highlighted: true }],
+  ["a3", { x: 45, y: 40, highlighted: true }],
 ]);
 
+// Paso 2: contragolpe vertical. Todo el bloque rival ya está corriendo
+// hacia atrás para recomponer, pero llega tarde a la carrera.
 const step2Players = applyMoves(step1Players, [
   ["h7", { x: 50, y: 60, highlighted: false }],
   ["h10", { x: 50, y: 30, highlighted: true }],
   ["h9", { x: 20, y: 42 }],
   ["h11", { x: 80, y: 42 }],
+  ["a3", { x: 48, y: 32 }], // sigue persiguiendo, pero el balón ya voló
+  ["a2", { x: 25, y: 34 }], // recupera hacia su carril
+  ["a4", { x: 62, y: 33 }],
+  ["a5", { x: 80, y: 34 }],
+  ["a6", { x: 25, y: 30 }], // el mediocampo también repliega a la carrera
+  ["a7", { x: 50, y: 28 }],
+  ["a8", { x: 75, y: 30 }],
 ]);
 
+// Paso 3: definición en superioridad. El rival, aunque recompuso algo
+// la línea, no alcanza a igualar el número de atacantes.
 const step3Players = applyMoves(step2Players, [
   ["h10", { x: 50, y: 10, highlighted: true }],
   ["h9", { x: 25, y: 14 }],
   ["h11", { x: 75, y: 14 }],
+  ["a1", { x: 50, y: 4 }],
+  ["a2", { x: 30, y: 18, highlighted: true }], // marca tarde al extremo
+  ["a3", { x: 50, y: 20 }], // vuelve a cubrir el centro del área
+  ["a4", { x: 62, y: 18 }],
+  ["a5", { x: 72, y: 18, highlighted: true }], // marca tarde al otro extremo
 ]);
 
 export const COUNTER_ATTACK: TacticalScheme = {
@@ -58,31 +76,36 @@ export const COUNTER_ATTACK: TacticalScheme = {
   boardStates: [
     {
       step: 1,
-      caption: "Recuperamos el balón en campo propio. El rival quedó desorganizado tras perder la posesión atacando.",
+      caption: "Recuperamos el balón en campo propio. El rival, que atacaba con muchos hombres, reacciona de inmediato pero queda desorganizado.",
       players: step1Players,
       ball: ballAt(step1Players, "h7"),
+      arrows: [{ from: { x: 38, y: 45 }, to: { x: 45, y: 40 }, type: "press" }],
       zones: [{ x: 15, y: 5, width: 70, height: 45, label: "Espacio abierto: superioridad en campo rival", variant: "positive" }],
     },
     {
       step: 2,
-      caption: "Contragolpe vertical directo: pase largo al delantero mientras los extremos sprintan a los carriles.",
+      caption: "Contragolpe vertical directo: mientras el balón vuela al delantero, todo el bloque rival corre hacia atrás para recomponerse.",
       players: step2Players,
       ball: ballAt(step2Players, "h10"),
       arrows: [
         { from: { x: 50, y: 60 }, to: { x: 50, y: 30 }, type: "pass" },
         { from: { x: 18, y: 45 }, to: { x: 20, y: 42 }, type: "run" },
         { from: { x: 82, y: 45 }, to: { x: 80, y: 42 }, type: "run" },
+        { from: { x: 38, y: 25 }, to: { x: 25, y: 30 }, type: "run", curved: true },
+        { from: { x: 88, y: 25 }, to: { x: 75, y: 30 }, type: "run", curved: true },
       ],
       zones: [{ x: 15, y: 5, width: 70, height: 30, label: "3 vs 2 en campo rival", variant: "positive" }],
     },
     {
       step: 3,
-      caption: "Definición en superioridad numérica antes de que el rival recomponga la línea.",
+      caption: "El rival marca tarde a los extremos: la superioridad numérica ya está resuelta antes de que puedan igualarla.",
       players: step3Players,
       ball: ballAt(step3Players, "h10"),
       arrows: [
         { from: { x: 20, y: 42 }, to: { x: 25, y: 14 }, type: "run" },
         { from: { x: 80, y: 42 }, to: { x: 75, y: 14 }, type: "run" },
+        { from: { x: 30, y: 34 }, to: { x: 30, y: 18 }, type: "run", curved: true },
+        { from: { x: 80, y: 34 }, to: { x: 72, y: 18 }, type: "run", curved: true },
       ],
       zones: [{ x: 15, y: 2, width: 70, height: 20, label: "Definición en superioridad numérica", variant: "positive" }],
     },
